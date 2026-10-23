@@ -1,10 +1,12 @@
 export type AssetType = "kpi" | "dataViz" | "layout" | "storyboard";
+export type Tab = "featured" | "kpi" | "layout" | "storyboard";
 
 type BaseAsset = {
   id: string;
   name: string;
   description: string;
   updatedAt: string;
+  featured?: boolean;
   trending?: boolean;
 };
 
