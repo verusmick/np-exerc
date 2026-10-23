@@ -19,3 +19,14 @@ You can explore the source code and run the application directly in your browser
   alt="Library UI running in GitHub Codespaces"
   width="800"
 />
+
+## Live Deployment
+
+The latest deployed version is available on Vercel:
+
+--> **[View Live Application](https://np-exercise.vercel.app/)**
+
+To deploy run:
+
+```bash
+npx vercel --prod
