@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   BarChart3,
   ChartNoAxesCombined,
@@ -10,6 +10,9 @@ import {
 } from "lucide-react";
 
 import { Asset, typeLabels } from "@/types/assets";
+
+import dataVizChart from "@/img/dataViz-chart.png";
+import layoutChart from "@/img/layout-chart.png";
 
 type Props = {
   asset: Asset | null;
@@ -132,6 +135,74 @@ export function AssetDialog({ asset, onClose }: Props) {
                         {question}
                       </p>
                     ))}
+                  </div>
+                </Detail>
+              </>
+            )}
+            {asset.type === "dataViz" && (
+              <>
+                <Detail label="Applicable KPIs">
+                  {asset.kpiIds.join(", ")}
+                </Detail>
+                <Detail label="Context">{asset.context}</Detail>
+                <div className="rounded border border-slate-100 bg-slate-50 p-3">
+                  <img
+                    src={dataVizChart.src}
+                    alt="Chart preview"
+                    className="mx-auto block h-auto w-full object-contain"
+                  />
+                </div>
+              </>
+            )}
+            {asset.type === "layout" && (
+              <>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Detail label="Pages">{asset.pageCount}</Detail>
+                  <Detail label="KPIs used">{asset.kpiIds.join(", ")}</Detail>
+                </div>
+                <Detail label="Layout preview">
+                  <div className="mt-2 rounded border border-slate-200 bg-slate-100 p-3">
+                    <img
+                      src={layoutChart.src}
+                      alt="Chart preview"
+                      className="mx-auto block h-auto w-full object-contain"
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Sections: {asset.previewSections.join(" · ")}
+                  </p>
+                </Detail>
+              </>
+            )}
+            {asset.type === "storyboard" && (
+              <>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Detail label="Coupled KPIs">
+                    {asset.kpiIds.join(", ")}
+                  </Detail>
+                  <Detail label="Available filters">
+                    {asset.filters.join(", ")}
+                  </Detail>
+                </div>
+                <Detail label="Applicable affiliates">
+                  {asset.affiliates.join(", ")}
+                </Detail>
+                <Detail label="Storyboard outline">
+                  <div className="mt-2 grid gap-2 sm:grid-cols-3">
+                    {["The question", "The evidence", "The takeaway"].map(
+                      (slide, index) => (
+                        <div
+                          key={slide}
+                          className="rounded border border-slate-200 bg-slate-50 p-3"
+                        >
+                          <span className="text-xs font-medium text-slate-500">
+                            Slide {index + 1}
+                          </span>
+                          <p className="mt-2 font-medium">{slide}</p>
+                          <div className="mt-4 h-1.5 w-3/4 rounded-full bg-slate-200" />
+                        </div>
+                      ),
+                    )}
                   </div>
                 </Detail>
               </>
