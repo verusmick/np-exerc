@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ArrowRight, Plus } from "lucide-react";
 
 import { assets } from "@/data/assets";
-import { AssetCard } from "@/components/asset-card";
+import { AssetCard, AssetDialog } from "@/components";
 
 import type { Asset, Tab } from "@/types/assets";
 
@@ -62,10 +62,12 @@ function AssetSection({
 export function Library() {
   const [tab, setTab] = useState<Tab>("featured");
   const [counts, setCounts] = useState(initialCounts);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const selected = assets.find((asset) => asset.id === selectedId) ?? null;
 
   function openAsset(id: string) {
-    console.log("Open Modal");
-    // open modal
+    setSelectedId(id);
   }
   function openRequest() {
     console.log("open request modal");
@@ -77,6 +79,7 @@ export function Library() {
       [section]: previous[section] + 4,
     }));
   }
+
   return (
     <main className="mx-auto min-h-screen max-w-200 px-4 pb-16 pt-5 sm:px-6">
       <header className="flex justify-end">
@@ -138,6 +141,8 @@ export function Library() {
           />
         </>
       </div>
+
+      <AssetDialog asset={selected} onClose={() => setSelectedId(null)} />
     </main>
   );
 }
