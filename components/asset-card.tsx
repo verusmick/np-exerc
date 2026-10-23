@@ -26,7 +26,7 @@ export function AssetCard({
     <button
       type="button"
       onClick={() => onOpen(asset.id)}
-      className="group flex min-h-25 w-full gap-3 rounded border border-slate-200 bg-white p-3 text-left shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:border-slate-400 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-700"
+      className="group flex min-h-25 w-full gap-3 rounded border border-slate-200 bg-white p-3 text-left  hover:border-slate-400 hover:shadow-sm "
       aria-label={`View ${asset.name} details`}
     >
       <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-500">
