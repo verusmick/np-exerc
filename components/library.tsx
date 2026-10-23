@@ -10,6 +10,7 @@ import type { Asset, Tab } from "@/types/assets";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "featured", label: "Featured" },
+  { id: "dataViz", label: "Data viz" },
   { id: "kpi", label: "KPI" },
   { id: "layout", label: "Layouts" },
   { id: "storyboard", label: "Storyboards" },
@@ -102,7 +103,7 @@ export function Library() {
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <nav
             aria-label="Asset categories"
-            className="grid min-w-0 flex-1 grid-cols-4 rounded bg-slate-100 p-0.5 text-center"
+            className="grid min-w-0 flex-1 grid-cols-5 rounded bg-slate-100 p-0.5 text-center"
           >
             {tabs.map((item) => (
               <button

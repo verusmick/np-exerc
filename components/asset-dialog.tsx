@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BarChart3,
   ChartNoAxesCombined,
@@ -22,6 +22,21 @@ const icons = {
   layout: LayoutDashboard,
   storyboard: PanelsTopLeft,
 };
+
+function Detail({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <h3 className="mb-1 text-xs font-semibold text-slate-800">{label}</h3>
+      <div className="text-xs leading-5 text-slate-600">{children}</div>
+    </div>
+  );
+}
 
 export function AssetDialog({ asset, onClose }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -84,6 +99,43 @@ export function AssetDialog({ asset, onClose }: Props) {
                 Last updated
               </span>
             </div>
+          </div>
+          <div className="space-y-4 px-5 pb-4 sm:px-6">
+            {asset.type === "kpi" && (
+              <>
+                <div className="rounded border border-slate-100 bg-slate-50 p-4">
+                  <p className="text-xs font-semibold text-slate-700">
+                    Calculation
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-slate-600">
+                    {asset.calculation}
+                  </p>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Detail label="Metric IDs">
+                    {asset.metricIds.join(", ")}
+                  </Detail>
+                  <Detail label="Visuals available">
+                    {asset.visuals.join(", ")}
+                  </Detail>
+                  <Detail label="Affiliate applicability">
+                    {asset.affiliates.join(", ")}
+                  </Detail>
+                </div>
+                <Detail label="Business questions">
+                  <div className="mt-1 grid gap-2 sm:grid-cols-2">
+                    {asset.businessQuestions.map((question) => (
+                      <p
+                        key={question}
+                        className="rounded bg-slate-50 p-2 text-xs"
+                      >
+                        {question}
+                      </p>
+                    ))}
+                  </div>
+                </Detail>
+              </>
+            )}
           </div>
         </>
       )}

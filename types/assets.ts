@@ -1,5 +1,5 @@
 export type AssetType = "kpi" | "dataViz" | "layout" | "storyboard";
-export type Tab = "featured" | "kpi" | "layout" | "storyboard";
+export type Tab = "featured" | "dataViz" | "kpi" | "layout" | "storyboard";
 
 type BaseAsset = {
   id: string;
@@ -13,15 +13,31 @@ type BaseAsset = {
 export type Asset =
   | (BaseAsset & {
     type: "kpi";
+    businessQuestions: string[];
+    metricIds: string[];
+    calculation: string;
+    visuals: string[];
+    affiliates: string[];
   })
   | (BaseAsset & {
     type: "dataViz";
+    kpiIds: string[];
+    context: string;
+    chartLabels: string[];
+    chartValues: number[];
   })
   | (BaseAsset & {
     type: "layout";
+    pageCount: number;
+    kpiIds: string[];
+    previewSections: string[];
   })
   | (BaseAsset & {
-    type: "storyboard"
+    type: "storyboard";
+    kpiIds: string[];
+    filters: string[];
+    affiliates: string[];
+    restricted?: boolean;
   });
 
 export const typeLabels: Record<AssetType, string> = {
