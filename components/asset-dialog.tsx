@@ -5,6 +5,7 @@ import {
   BarChart3,
   Bookmark,
   ChartNoAxesCombined,
+  Copy,
   LayoutDashboard,
   PanelsTopLeft,
   X,
@@ -20,6 +21,7 @@ type Props = {
   onClose: () => void;
   isFavorite: boolean;
   onFavorite: () => void;
+  onCopy: () => void;
 };
 
 const icons = {
@@ -44,7 +46,13 @@ function Detail({
   );
 }
 
-export function AssetDialog({ asset, onClose, isFavorite, onFavorite }: Props) {
+export function AssetDialog({
+  asset,
+  onClose,
+  isFavorite,
+  onFavorite,
+  onCopy,
+}: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const Icon = asset ? icons[asset.type] : ChartNoAxesCombined;
 
@@ -72,9 +80,16 @@ export function AssetDialog({ asset, onClose, isFavorite, onFavorite }: Props) {
               type="button"
               aria-label="Close details"
               onClick={() => dialogRef.current?.close()}
-              className="absolute right-3 top-3 rounded p-1 text-slate-500 hover:bg-slate-100"
+              className="absolute right-3 top-3 rounded p-1 text-slate-500 "
             >
               <X size={17} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={onCopy}
+              className="absolute right-10 top-3 rounded p-1 text-slate-500"
+            >
+              <Copy size={15} aria-hidden="true" />
             </button>
             <span className="mx-auto flex h-9 w-9 items-center justify-center rounded bg-slate-100 text-slate-500">
               <Icon size={20} strokeWidth={1.4} aria-hidden="true" />

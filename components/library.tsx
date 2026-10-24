@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, Plus, Search, X } from "lucide-react";
 
 import { assets } from "@/data/assets";
@@ -111,6 +111,25 @@ export function Library() {
       [section]: previous[section] + 4,
     }));
   }
+
+  async function copyLink() {
+    if (!selected) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("asset", selected.id);
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      alert("Link copied to clipboard.");
+    } catch {
+      alert(
+        "Could not copy the link. Check your browser's clipboard permissions.",
+      );
+    }
+  }
+
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("asset");
+    if (id && assets.some((asset) => asset.id === id)) setSelectedId(id);
+  }, []);
 
   return (
     <main className="mx-auto min-h-screen max-w-200 px-4 pb-16 pt-5 sm:px-6">
@@ -270,6 +289,7 @@ export function Library() {
             return next;
           });
         }}
+        onCopy={copyLink}
       />
     </main>
   );
