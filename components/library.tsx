@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Plus, Search, X } from "lucide-react";
 
 import { assets } from "@/data/assets";
 import { AssetCard, AssetDialog } from "@/components";
@@ -15,10 +15,11 @@ const tabs: { id: Tab; label: string }[] = [
   { id: "layout", label: "Layouts" },
   { id: "storyboard", label: "Storyboards" },
 ];
-type SectionKey = "featured" | "trending";
+type SectionKey = "featured" | "trending" | "list";
 const initialCounts: Record<SectionKey, number> = {
   featured: 4,
   trending: 4,
+  list: 4,
 };
 
 function AssetSection({
@@ -51,7 +52,7 @@ function AssetSection({
         <button
           type="button"
           onClick={onMore}
-          className="mt-3 inline-flex items-center gap-1 rounded border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-slate-700"
+          className="mt-3 inline-flex items-center gap-1 rounded border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 "
         >
           Show more <ArrowRight size={16} aria-hidden="true" />
         </button>
@@ -64,8 +65,30 @@ export function Library() {
   const [tab, setTab] = useState<Tab>("featured");
   const [counts, setCounts] = useState(initialCounts);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
 
+  // open modal
   const selected = assets.find((asset) => asset.id === selectedId) ?? null;
+
+  // Filter Assets
+  const withinTab =
+    tab === "featured" ? assets : assets.filter((asset) => asset.type === tab);
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  const results = withinTab.filter((asset) =>
+    asset.name.toLocaleLowerCase().includes(normalizedQuery),
+  );
+
+  function updateQuery(value: string) {
+    setQuery(value);
+    setCounts(initialCounts);
+  }
+
+  function commitSearch(value: string) {
+    const term = value.trim();
+    if (!term) return;
+    updateQuery(term);
+  }
+  // End - Filter Assets
 
   function openAsset(id: string) {
     setSelectedId(id);
@@ -100,6 +123,48 @@ export function Library() {
         <p className="mt-2 text-xs text-slate-600">
           Browse for assets needed to report and present analysis.
         </p>
+        <div className="relative mt-5 text-left">
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              commitSearch(query);
+            }}
+            role="search"
+          >
+            <Search
+              size={15}
+              className="pointer-events-none absolute left-3 top-2.5 text-slate-400"
+              aria-hidden="true"
+            />
+            <input
+              id="library-search"
+              type="text"
+              value={query}
+              onChange={(event) => updateQuery(event.target.value)}
+              placeholder="Type to search..."
+              className="h-9 w-full rounded border border-slate-200 bg-white pl-9 pr-21 text-xs text-slate-900 outline-none placeholder:text-slate-400"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => {
+                  updateQuery("");
+                }}
+                className="absolute right-16 top-1.5 rounded p-1 text-slate-500 "
+                aria-label="Clear search"
+              >
+                <X size={15} />
+              </button>
+            )}
+            <button
+              type="submit"
+              className="absolute right-1 top-1 rounded px-2.5 py-1.5 text-xs font-medium text-slate-500 "
+            >
+              Search
+            </button>
+          </form>
+        </div>
+
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <nav
             aria-label="Asset categories"
@@ -113,7 +178,7 @@ export function Library() {
                 onClick={() => {
                   setTab(item.id);
                 }}
-                className={`rounded px-1 py-1.5 text-[11px] sm:text-xs ${tab === item.id ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-800"}`}
+                className={`rounded px-1 py-1.5 text-[11px] sm:text-xs ${tab === item.id ? "bg-white text-slate-900" : "text-slate-500"}`}
               >
                 {item.label}
               </button>
@@ -121,26 +186,64 @@ export function Library() {
           </nav>
         </div>
       </div>
-
       <div className="mx-auto max-w-150">
-        <>
+        {tab === "featured" && !normalizedQuery ? (
+          <>
+            <AssetSection
+              title="Featured"
+              subtitle="Curated top picks from this week"
+              items={assets.filter((asset) => asset.featured)}
+              visibleCount={counts.featured}
+              onMore={() => showMore("featured")}
+              onOpen={openAsset}
+            />
+            <AssetSection
+              title="Trending"
+              subtitle="Most popular by the community"
+              items={assets.filter((asset) => asset.trending)}
+              visibleCount={counts.trending}
+              onMore={() => showMore("trending")}
+              onOpen={openAsset}
+            />
+          </>
+        ) : results.length > 0 ? (
           <AssetSection
-            title="Featured"
-            subtitle="Curated top picks from this week"
-            items={assets.filter((asset) => asset.featured)}
-            visibleCount={counts.featured}
-            onMore={() => showMore("featured")}
+            title={
+              normalizedQuery
+                ? `Results for “${query.trim()}”`
+                : (tabs.find((item) => item.id === tab)?.label ?? "Assets")
+            }
+            subtitle={`${results.length} ${results.length === 1 ? "asset" : "assets"} found${tab === "featured" ? "" : ` in ${tabs.find((item) => item.id === tab)?.label}`}`}
+            items={results}
+            visibleCount={counts.list}
+            onMore={() => showMore("list")}
             onOpen={openAsset}
           />
-          <AssetSection
-            title="Trending"
-            subtitle="Most popular by the community"
-            items={assets.filter((asset) => asset.trending)}
-            visibleCount={counts.trending}
-            onMore={() => showMore("trending")}
-            onOpen={openAsset}
-          />
-        </>
+        ) : (
+          <div className="mt-7 rounded border border-dashed border-slate-300 bg-white px-5 py-10 text-center">
+            <Search
+              size={22}
+              className="mx-auto text-slate-400"
+              aria-hidden="true"
+            />
+
+            <h2 className="mt-3 text-sm font-semibold">"No assets found"</h2>
+            <p className="mt-1 text-xs text-slate-600">
+              "Try a different search or category."
+            </p>
+            {normalizedQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  updateQuery("");
+                }}
+                className="mt-3 rounded border border-slate-200 px-3 py-1.5 text-xs font-medium"
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       <AssetDialog asset={selected} onClose={() => setSelectedId(null)} />
