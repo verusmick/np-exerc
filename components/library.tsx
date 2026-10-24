@@ -7,6 +7,7 @@ import { assets } from "@/data/assets";
 import { AssetCard, AssetDialog } from "@/components";
 
 import type { Asset, Tab } from "@/types/assets";
+import { RequestDialog } from "./request-dialog";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "featured", label: "Featured" },
@@ -74,7 +75,7 @@ export function Library() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
-
+  const [requestDialog, setRequestDialog] = useState<boolean | null>(null);
   // open modal
   const selected = assets.find((asset) => asset.id === selectedId) ?? null;
 
@@ -102,7 +103,7 @@ export function Library() {
     setSelectedId(id);
   }
   function openRequest() {
-    console.log("open request modal");
+    setRequestDialog(true);
   }
 
   function showMore(section: SectionKey) {
@@ -290,6 +291,10 @@ export function Library() {
           });
         }}
         onCopy={copyLink}
+      />
+      <RequestDialog
+        context={requestDialog}
+        onClose={() => setRequestDialog(null)}
       />
     </main>
   );

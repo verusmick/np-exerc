@@ -8,6 +8,7 @@ type BaseAsset = {
   updatedAt: string;
   featured?: boolean;
   trending?: boolean;
+  restricted?: boolean;
 };
 
 export type Asset =
@@ -37,7 +38,6 @@ export type Asset =
     kpiIds: string[];
     filters: string[];
     affiliates: string[];
-    restricted?: boolean;
   });
 
 export const typeLabels: Record<AssetType, string> = {

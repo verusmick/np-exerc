@@ -251,6 +251,19 @@ export function AssetDialog({
                 />
                 {isFavorite ? "Remove favorite" : "Favorite item"}
               </button>
+              {asset.restricted && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    alert(
+                      `Your submission for the ${asset.name} ${asset.type} has already been sent.`,
+                    )
+                  }
+                  className="rounded border border-slate-300 px-3 py-2 text-xs font-medium text-slate-70"
+                >
+                  Request access
+                </button>
+              )}
             </div>
           </div>
         </>
