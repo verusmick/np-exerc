@@ -18,6 +18,8 @@ import layoutChart from "@/img/layout-chart.png";
 type Props = {
   asset: Asset | null;
   onClose: () => void;
+  isFavorite: boolean;
+  onFavorite: () => void;
 };
 
 const icons = {
@@ -42,7 +44,7 @@ function Detail({
   );
 }
 
-export function AssetDialog({ asset, onClose }: Props) {
+export function AssetDialog({ asset, onClose, isFavorite, onFavorite }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const Icon = asset ? icons[asset.type] : ChartNoAxesCombined;
 
@@ -223,16 +225,16 @@ export function AssetDialog({ asset, onClose }: Props) {
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={() => {}}
+                onClick={onFavorite}
                 aria-pressed={false}
                 className="inline-flex flex-1 items-center justify-center gap-2 rounded bg-slate-800 px-3 py-2 text-xs font-medium text-white "
               >
                 <Bookmark
                   size={14}
-                  fill={false ? "currentColor" : "none"}
+                  fill={isFavorite ? "currentColor" : "none"}
                   aria-hidden="true"
                 />
-                {false ? "Remove favorite" : "Favorite item"}
+                {isFavorite ? "Remove favorite" : "Favorite item"}
               </button>
             </div>
           </div>

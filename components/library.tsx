@@ -29,6 +29,7 @@ function AssetSection({
   visibleCount,
   onMore,
   onOpen,
+  favorites,
 }: {
   title: string;
   subtitle: string;
@@ -36,6 +37,7 @@ function AssetSection({
   visibleCount: number;
   onMore: () => void;
   onOpen: (id: string) => void;
+  favorites: Set<string>;
 }) {
   return (
     <section className="mt-7" aria-label={title}>
@@ -45,7 +47,12 @@ function AssetSection({
       </div>
       <div className="grid gap-2.5 sm:grid-cols-2">
         {items.slice(0, visibleCount).map((asset) => (
-          <AssetCard key={asset.id} asset={asset} onOpen={onOpen} />
+          <AssetCard
+            key={asset.id}
+            asset={asset}
+            onOpen={onOpen}
+            isFavorite={favorites.has(asset.id)}
+          />
         ))}
       </div>
       {items.length > visibleCount && (
@@ -66,6 +73,7 @@ export function Library() {
   const [counts, setCounts] = useState(initialCounts);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
 
   // open modal
   const selected = assets.find((asset) => asset.id === selectedId) ?? null;
@@ -196,6 +204,7 @@ export function Library() {
               visibleCount={counts.featured}
               onMore={() => showMore("featured")}
               onOpen={openAsset}
+              favorites={favorites}
             />
             <AssetSection
               title="Trending"
@@ -204,6 +213,7 @@ export function Library() {
               visibleCount={counts.trending}
               onMore={() => showMore("trending")}
               onOpen={openAsset}
+              favorites={favorites}
             />
           </>
         ) : results.length > 0 ? (
@@ -218,6 +228,7 @@ export function Library() {
             visibleCount={counts.list}
             onMore={() => showMore("list")}
             onOpen={openAsset}
+            favorites={favorites}
           />
         ) : (
           <div className="mt-7 rounded border border-dashed border-slate-300 bg-white px-5 py-10 text-center">
@@ -246,7 +257,20 @@ export function Library() {
         )}
       </div>
 
-      <AssetDialog asset={selected} onClose={() => setSelectedId(null)} />
+      <AssetDialog
+        asset={selected}
+        onClose={() => setSelectedId(null)}
+        isFavorite={selected ? favorites.has(selected.id) : false}
+        onFavorite={() => {
+          if (!selected) return;
+          setFavorites((previous) => {
+            const next = new Set(previous);
+            if (next.has(selected.id)) next.delete(selected.id);
+            else next.add(selected.id);
+            return next;
+          });
+        }}
+      />
     </main>
   );
 }

@@ -17,3 +17,7 @@ button {
 button:disabled {
   cursor: not-allowed;
 }
+
+dialog::backdrop {
+  background: rgb(34 42 54 / 38%);
+}

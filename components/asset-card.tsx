@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  BookmarkCheck,
   ChartNoAxesCombined,
   LayoutDashboard,
   PanelsTopLeft,
@@ -17,9 +18,11 @@ const icons = {
 export function AssetCard({
   asset,
   onOpen,
+  isFavorite,
 }: {
   asset: Asset;
   onOpen: (id: string) => void;
+  isFavorite: boolean;
 }) {
   const Icon = icons[asset.type];
   return (
@@ -35,6 +38,13 @@ export function AssetCard({
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="flex items-center gap-1.5 text-sm font-semibold leading-5 text-slate-900 group-hover:text-slate-700">
           <span>{asset.name}</span>
+          {isFavorite && (
+            <BookmarkCheck
+              size={14}
+              className="shrink-0 text-slate-600"
+              aria-label="Favorited"
+            />
+          )}
         </span>
         <span className="mt-0.5 line-clamp-2 text-xs leading-4 text-slate-600">
           {asset.description}
