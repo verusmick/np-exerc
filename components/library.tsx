@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, Plus, Search, X } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 import { assets } from "@/data/assets";
-import { AssetCard, AssetDialog } from "@/components";
+import {
+  AssetDialog,
+  AssetSection,
+  RequestDialog,
+  SearchSection,
+} from "@/components";
 
-import type { Asset, Tab } from "@/types/assets";
-import { RequestDialog } from "./request-dialog";
+import type { Tab } from "@/types/assets";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "featured", label: "Featured" },
@@ -22,52 +26,6 @@ const initialCounts: Record<SectionKey, number> = {
   trending: 4,
   list: 4,
 };
-
-function AssetSection({
-  title,
-  subtitle,
-  items,
-  visibleCount,
-  onMore,
-  onOpen,
-  favorites,
-}: {
-  title: string;
-  subtitle: string;
-  items: Asset[];
-  visibleCount: number;
-  onMore: () => void;
-  onOpen: (id: string) => void;
-  favorites: Set<string>;
-}) {
-  return (
-    <section className="mt-7" aria-label={title}>
-      <div className="mb-3">
-        <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-        <p className="text-xs text-slate-500">{subtitle}</p>
-      </div>
-      <div className="grid gap-2.5 sm:grid-cols-2">
-        {items.slice(0, visibleCount).map((asset) => (
-          <AssetCard
-            key={asset.id}
-            asset={asset}
-            onOpen={onOpen}
-            isFavorite={favorites.has(asset.id)}
-          />
-        ))}
-      </div>
-      {items.length > visibleCount && (
-        <button
-          type="button"
-          onClick={onMore}
-          className="mt-3 inline-flex items-center gap-1 rounded border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 "
-        >
-          Show more <ArrowRight size={16} aria-hidden="true" />
-        </button>
-      )}
-    </section>
-  );
-}
 
 export function Library() {
   const [tab, setTab] = useState<Tab>("featured");
@@ -151,47 +109,11 @@ export function Library() {
         <p className="mt-2 text-xs text-slate-600">
           Browse for assets needed to report and present analysis.
         </p>
-        <div className="relative mt-5 text-left">
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              commitSearch(query);
-            }}
-            role="search"
-          >
-            <Search
-              size={15}
-              className="pointer-events-none absolute left-3 top-2.5 text-slate-400"
-              aria-hidden="true"
-            />
-            <input
-              id="library-search"
-              type="text"
-              value={query}
-              onChange={(event) => updateQuery(event.target.value)}
-              placeholder="Type to search..."
-              className="h-9 w-full rounded border border-slate-200 bg-white pl-9 pr-21 text-xs text-slate-900 outline-none placeholder:text-slate-400"
-            />
-            {query && (
-              <button
-                type="button"
-                onClick={() => {
-                  updateQuery("");
-                }}
-                className="absolute right-16 top-1.5 rounded p-1 text-slate-500 "
-                aria-label="Clear search"
-              >
-                <X size={15} />
-              </button>
-            )}
-            <button
-              type="submit"
-              className="absolute right-1 top-1 rounded px-2.5 py-1.5 text-xs font-medium text-slate-500 "
-            >
-              Search
-            </button>
-          </form>
-        </div>
+        <SearchSection
+          query={query}
+          updateQuery={updateQuery}
+          commitSearch={commitSearch}
+        />
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <nav
