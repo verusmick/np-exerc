@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import {
   BarChart3,
+  Bookmark,
   ChartNoAxesCombined,
   LayoutDashboard,
   PanelsTopLeft,
@@ -92,6 +93,16 @@ export function AssetDialog({ asset, onClose }: Props) {
                 Type
               </span>
 
+              <span>
+                <strong className="block text-xs text-slate-900">
+                  {asset.type === "layout"
+                    ? asset.pageCount
+                    : asset.type === "kpi"
+                      ? asset.metricIds.length
+                      : asset.kpiIds.length}
+                </strong>
+                {asset.type === "layout" ? "Pages" : "Metrics"}
+              </span>
               <span>
                 <strong className="block text-xs text-slate-900">
                   {new Date(`${asset.updatedAt}T00:00:00`).toLocaleDateString(
@@ -207,6 +218,23 @@ export function AssetDialog({ asset, onClose }: Props) {
                 </Detail>
               </>
             )}
+          </div>
+          <div className="px-5 pb-5 sm:px-6">
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => {}}
+                aria-pressed={false}
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded bg-slate-800 px-3 py-2 text-xs font-medium text-white "
+              >
+                <Bookmark
+                  size={14}
+                  fill={false ? "currentColor" : "none"}
+                  aria-hidden="true"
+                />
+                {false ? "Remove favorite" : "Favorite item"}
+              </button>
+            </div>
           </div>
         </>
       )}
